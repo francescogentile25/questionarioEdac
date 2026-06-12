@@ -1,0 +1,55 @@
+<div class="sd-page">
+  <header class="sd-header">
+    <a class="sd-back" routerLink="/admin">← Dashboard</a>
+    <img class="sd-logo" src="assets/logo/logo-ea.png" alt="Logo EA" />
+  </header>
+
+  <main class="sd-main">
+    @if (load().loading) {
+      <!-- Stato: caricamento -->
+      <div class="sd-center">
+        <span class="sd-loader" aria-hidden="true"></span>
+        <p>Caricamento risposte…</p>
+      </div>
+    } @else if (load().error) {
+      <!-- Stato: errore -->
+      <div class="sd-center">
+        <p class="sd-center__title">Qualcosa è andato storto</p>
+        <p>{{ load().error }}</p>
+        <a class="sd-btn" routerLink="/admin">Torna alla dashboard</a>
+      </div>
+    } @else {
+      <header class="sd-intro">
+        <p class="sd-eyebrow">Questionario inviato</p>
+        <h1 class="sd-title">{{ submittedAt() }}</h1>
+        <p class="sd-id">ID: {{ load().data!.submission.id }}</p>
+      </header>
+
+      @for (view of sectionViews(); track view.section.id) {
+        <section class="sd-panel">
+          <h2 class="sd-panel__title">
+            <span class="sd-panel__num">{{ view.section.position.toString().padStart(2, '0') }}</span>
+            {{ view.section.title }}
+          </h2>
+
+          @for (item of view.items; track item.question.id) {
+            <div class="sd-qa">
+              <p class="sd-qa__question">{{ item.question.text }}</p>
+              @if (item.missing) {
+                <p class="sd-qa__missing">Nessuna risposta</p>
+              } @else if (item.lines.length === 1) {
+                <p class="sd-qa__answer">{{ item.lines[0] }}</p>
+              } @else {
+                <ul class="sd-qa__list">
+                  @for (line of item.lines; track line) {
+                    <li>{{ line }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          }
+        </section>
+      }
+    }
+  </main>
+</div>

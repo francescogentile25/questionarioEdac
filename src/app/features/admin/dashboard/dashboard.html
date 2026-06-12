@@ -50,53 +50,63 @@
         </article>
       </div>
 
-      <!-- Ultimi invii -->
+      <!-- Andamento invii -->
+      @if (timelineChart(); as timeline) {
+        <section class="db-panel">
+          <h2 class="db-panel__title">Andamento invii</h2>
+          <p-chart
+            type="line"
+            [data]="timeline.data"
+            [options]="timeline.options"
+            height="220px" />
+        </section>
+      }
+
+      <!-- Elenco invii -->
       <section class="db-panel">
-        <h2 class="db-panel__title">Ultimi invii</h2>
+        <h2 class="db-panel__title">Invii ricevuti</h2>
+        <p class="db-panel__hint">Seleziona un invio per leggere tutte le risposte.</p>
         <ul class="db-recent">
-          @for (sub of load().data!.recent; track sub.id) {
+          @for (sub of load().data!.submissions; track sub.id) {
             <li>
-              <span class="db-recent__id">{{ sub.id.slice(0, 8) }}…</span>
-              <span class="db-recent__date">{{ formatDate(sub.created_at) }}</span>
+              <a class="db-recent__link" [routerLink]="['/admin/invii', sub.id]">
+                <span class="db-recent__id">{{ sub.id.slice(0, 8) }}…</span>
+                <span class="db-recent__date">{{ formatDate(sub.created_at) }}</span>
+                <span class="db-recent__arrow" aria-hidden="true">→</span>
+              </a>
             </li>
           }
         </ul>
       </section>
 
-      <!-- Distribuzioni per sezione -->
+      <!-- Grafici per sezione -->
       @for (stat of sectionStats(); track stat.section.id) {
         <section class="db-panel">
           <h2 class="db-panel__title">
             <span class="db-panel__num">{{ stat.section.position.toString().padStart(2, '0') }}</span>
             {{ stat.section.title }}
           </h2>
-
-          @for (qs of stat.questions; track qs.question.id) {
-            <div class="db-question">
-              <p class="db-question__text">
-                {{ qs.question.text }}
-                <span class="db-question__answered">{{ qs.answered }} risposte</span>
-              </p>
-
-              @if (qs.options.length) {
-                <div class="db-bars">
-                  @for (opt of qs.options; track opt.label) {
-                    <div class="db-bar">
-                      <div class="db-bar__head">
-                        <span class="db-bar__label">{{ opt.label }}</span>
-                        <span class="db-bar__count">{{ opt.count }} · {{ opt.pct }}%</span>
-                      </div>
-                      <div class="db-bar__track">
-                        <div class="db-bar__fill" [style.width.%]="opt.pct"></div>
-                      </div>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <p class="db-question__free">Risposta libera — consultabile per singolo invio</p>
-              }
-            </div>
+          @if (stat.freeTextCount > 0) {
+            <p class="db-panel__hint">
+              {{ stat.freeTextCount }} domande a testo libero — consultabili nei singoli invii
+            </p>
           }
+
+          <div class="db-charts">
+            @for (chart of stat.charts; track chart.question.id) {
+              <div class="db-chart">
+                <p class="db-chart__title">
+                  {{ chart.question.text }}
+                  <span class="db-chart__answered">{{ chart.answered }} risposte</span>
+                </p>
+                <p-chart
+                  [type]="chart.chartType"
+                  [data]="chart.chartData"
+                  [options]="chart.chartOptions"
+                  [height]="chart.height" />
+              </div>
+            }
+          </div>
         </section>
       }
     }

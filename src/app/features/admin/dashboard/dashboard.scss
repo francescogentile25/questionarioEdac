@@ -154,23 +154,47 @@
   color: var(--accent-deep);
 }
 
-/* ---------- Ultimi invii ---------- */
+/* ---------- Elenco invii ---------- */
+
+.db-panel__hint {
+  margin: -0.5rem 0 0.9rem;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
 
 .db-recent {
   margin: 0;
   padding: 0;
   list-style: none;
+  max-height: 320px;
+  overflow-y: auto;
 
   li {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.55rem 0;
     border-bottom: 1px solid var(--paper-deep);
-    font-size: 0.92rem;
 
     &:last-child {
       border-bottom: none;
+    }
+  }
+}
+
+.db-recent__link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.65rem 0.4rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 0.92rem;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: var(--paper);
+
+    .db-recent__arrow {
+      transform: translateX(3px);
+      color: var(--accent-deep);
     }
   }
 }
@@ -181,28 +205,37 @@
 }
 
 .db-recent__date {
+  flex: 1;
   font-weight: 600;
 }
 
-/* ---------- Domande e barre ---------- */
-
-.db-question {
-  padding: 0.9rem 0;
-  border-top: 1px solid var(--paper-deep);
-
-  &:first-of-type {
-    border-top: none;
-  }
+.db-recent__arrow {
+  color: var(--ink-soft);
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
-.db-question__text {
-  margin: 0 0 0.6rem;
+/* ---------- Grafici ---------- */
+
+.db-charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+}
+
+.db-chart {
+  padding: 1rem;
+  border: 1px solid var(--paper-deep);
+  border-radius: 14px;
+}
+
+.db-chart__title {
+  margin: 0 0 0.8rem;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   line-height: 1.4;
 }
 
-.db-question__answered {
+.db-chart__answered {
   display: inline-block;
   margin-left: 0.5rem;
   padding: 0.08rem 0.55rem;
@@ -212,51 +245,6 @@
   font-size: 0.76rem;
   font-weight: 600;
   white-space: nowrap;
-}
-
-.db-question__free {
-  margin: 0;
-  font-size: 0.85rem;
-  font-style: italic;
-  color: var(--ink-soft);
-}
-
-.db-bars {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-}
-
-.db-bar__head {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.25rem;
-  font-size: 0.86rem;
-}
-
-.db-bar__label {
-  color: var(--ink);
-}
-
-.db-bar__count {
-  color: var(--ink-soft);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.db-bar__track {
-  height: 8px;
-  border-radius: 99px;
-  background: var(--paper-deep);
-  overflow: hidden;
-}
-
-.db-bar__fill {
-  height: 100%;
-  border-radius: 99px;
-  background: linear-gradient(90deg, var(--accent), var(--brand));
-  transition: width 0.5s cubic-bezier(0.22, 0.8, 0.32, 1);
 }
 
 /* ---------- Bottoni ---------- */
@@ -340,8 +328,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .db-loader,
-  .db-bar__fill,
-  .db-btn {
+  .db-btn,
+  .db-recent__arrow {
     animation: none;
     transition: none;
   }
@@ -352,5 +340,9 @@
 @media (min-width: 640px) {
   .db-cards {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .db-charts {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

@@ -9,6 +9,11 @@ export const adminRoutes: Routes = [
     loadComponent: () => import('./login/admin-login').then((c) => c.AdminLogin),
   },
   {
+    path: 'invii/:id',
+    canActivate: [supabaseAuthGuard],
+    loadComponent: () => import('./submission-detail/submission-detail').then((c) => c.SubmissionDetail),
+  },
+  {
     path: '',
     canActivate: [supabaseAuthGuard],
     loadComponent: () => import('./dashboard/dashboard').then((c) => c.Dashboard),

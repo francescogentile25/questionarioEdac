@@ -1,7 +1,7 @@
 import { SectionResponse } from '../../../questionario/models/responses/section.response';
 import { AnswerValue } from '../../../questionario/models/requests/submit-questionnaire.request';
 
-export type RecentSubmission = {
+export type SubmissionResponse = {
   id: string;
   created_at: string;
 };
@@ -13,7 +13,13 @@ export type AnswerRow = {
 
 export type DashboardData = {
   totalSubmissions: number;
-  recent: RecentSubmission[];
+  submissions: SubmissionResponse[];
+  answers: AnswerRow[];
+  sections: SectionResponse[];
+};
+
+export type SubmissionDetailData = {
+  submission: SubmissionResponse;
   answers: AnswerRow[];
   sections: SectionResponse[];
 };
