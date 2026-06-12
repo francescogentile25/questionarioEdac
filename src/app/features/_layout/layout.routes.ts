@@ -27,9 +27,5 @@ export const layoutRoutes: Routes = [
       }
     ]
   },
-  {
-    path: '**',
-    pathMatch: 'full',
-    redirectTo: ''
-  },
+  // Niente wildcard qui: gli URL sconosciuti devono ricadere sul '**' globale (app.routes.ts)
 ]
