@@ -1,0 +1,84 @@
+<fieldset class="qf" [class.qf--invalid]="showErrors() && error()">
+  <legend class="qf__legend">
+    <span class="qf__num" aria-hidden="true">{{ pad(question().id) }}</span>
+    <span class="qf__text">
+      {{ question().text }}
+      @if (!question().required) {
+        <span class="qf__optional">facoltativa</span>
+      }
+    </span>
+  </legend>
+
+  @if (question().description) {
+    <p class="qf__desc">{{ question().description }}</p>
+  }
+
+  @switch (question().type) {
+    @case ('radio') {
+      <div class="qf__options" role="radiogroup" [attr.aria-label]="question().text">
+        @for (opt of question().options ?? []; track opt) {
+          <button
+            type="button"
+            class="qf__option"
+            role="radio"
+            [class.qf__option--on]="isSelected(opt)"
+            [attr.aria-checked]="isSelected(opt)"
+            (click)="selectRadio(opt)">
+            <span class="qf__mark qf__mark--dot" aria-hidden="true"></span>
+            <span>{{ opt }}</span>
+          </button>
+        }
+      </div>
+    }
+    @case ('checkbox') {
+      <div class="qf__options" role="group" [attr.aria-label]="question().text">
+        @for (opt of question().options ?? []; track opt) {
+          <button
+            type="button"
+            class="qf__option"
+            role="checkbox"
+            [class.qf__option--on]="isSelected(opt)"
+            [attr.aria-checked]="isSelected(opt)"
+            (click)="toggleCheckbox(opt)">
+            <span class="qf__mark qf__mark--box" aria-hidden="true"></span>
+            <span>{{ opt }}</span>
+          </button>
+        }
+      </div>
+    }
+    @case ('text') {
+      <input
+        class="qf__input"
+        type="text"
+        [value]="textValue()"
+        (input)="setText($event)"
+        [attr.aria-label]="question().text" />
+    }
+    @case ('textarea') {
+      <textarea
+        class="qf__input qf__textarea"
+        rows="4"
+        [value]="textValue()"
+        (input)="setText($event)"
+        [attr.aria-label]="question().text"></textarea>
+    }
+  }
+
+  @if (showOther()) {
+    <label class="qf__follow">
+      <span class="qf__follow-label">Specificare "Altro"</span>
+      <input class="qf__input" type="text" [value]="answer().other ?? ''" (input)="setOther($event)" />
+    </label>
+  }
+
+  @if (showExtra()) {
+    <label class="qf__follow">
+      <span class="qf__follow-label">{{ question().extra_text_label }}</span>
+      <textarea class="qf__input qf__textarea" rows="3" [value]="answer().extra ?? ''" (input)="setExtra($event)"></textarea>
+    </label>
+  }
+
+  @if (showErrors() && error()) {
+    <p class="qf__error" role="alert">{{ error() }}</p>
+  }
+</fieldset>

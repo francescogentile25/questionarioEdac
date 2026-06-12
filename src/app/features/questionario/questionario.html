@@ -1,0 +1,139 @@
+<div class="q-page">
+  <div class="q-grain" aria-hidden="true"></div>
+  <div class="q-blob q-blob--1" aria-hidden="true"></div>
+  <div class="q-blob q-blob--2" aria-hidden="true"></div>
+
+  @if (stepIndex() >= 0 && !submitted() && !load().loading && !load().error) {
+    <div
+      class="q-progress"
+      role="progressbar"
+      aria-label="Avanzamento questionario"
+      [attr.aria-valuenow]="stepIndex() + 1"
+      aria-valuemin="1"
+      [attr.aria-valuemax]="totalSteps()">
+      <div class="q-progress__fill" [style.width.%]="progress()"></div>
+    </div>
+  }
+
+  <main class="q-shell">
+    @if (load().loading) {
+      <!-- Stato: caricamento -->
+      <div class="q-center">
+        <img class="q-logo q-logo--pulse" src="assets/logo/logo-ea.png" alt="" aria-hidden="true" />
+        <p class="q-center__text">Caricamento del questionario…</p>
+      </div>
+    } @else if (load().error) {
+      <!-- Stato: errore -->
+      <div class="q-center">
+        <img class="q-logo gs-rise" src="assets/logo/logo-ea.png" alt="" aria-hidden="true" />
+        <p class="q-center__title gs-rise">Qualcosa è andato storto</p>
+        <p class="q-center__text gs-rise">{{ load().error }}</p>
+        <button type="button" class="q-btn q-btn--primary gs-rise" (click)="retry()">Riprova</button>
+      </div>
+    } @else if (load().sections.length === 0) {
+      <!-- Stato: vuoto -->
+      <div class="q-center">
+        <img class="q-logo gs-rise" src="assets/logo/logo-ea.png" alt="" aria-hidden="true" />
+        <p class="q-center__title gs-rise">Nessuna domanda disponibile</p>
+        <p class="q-center__text gs-rise">Il questionario non è ancora stato configurato.</p>
+      </div>
+    } @else if (submitted()) {
+      <!-- Stato: inviato -->
+      <div class="q-center q-success">
+        <svg class="q-success__check gs-rise" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="29" />
+          <path d="M20 33.5 28.5 42 44 24" />
+        </svg>
+        <h1 class="q-success__title gs-rise">Grazie.</h1>
+        <p class="q-center__text gs-rise">
+          Le risposte sono state inviate correttamente.<br />
+          Può chiudere questa pagina.
+        </p>
+        <img class="q-logo q-logo--footer gs-rise" src="assets/logo/logo-ea.png" alt="Logo EA" />
+      </div>
+    } @else if (stepIndex() === -1) {
+      <!-- Schermata introduttiva -->
+      <header class="q-intro">
+        <img class="q-logo q-logo--intro gs-rise" src="assets/logo/logo-ea.png" alt="Logo EA" />
+        <p class="q-eyebrow gs-rise">Questionario riservato ai docenti</p>
+        <h1 class="q-intro__title gs-rise">
+          Redazione del <em>PEI</em> a&nbsp;distanza
+        </h1>
+        <p class="q-intro__lead gs-rise">
+          Le sue osservazioni sull'alunno sono fondamentali per costruire un Piano Educativo
+          Individualizzato accurato. Le risposte vengono salvate solo al momento dell'invio finale.
+        </p>
+        <dl class="q-intro__meta gs-rise">
+          <div>
+            <dt>{{ totalSteps() }}</dt>
+            <dd>sezioni</dd>
+          </div>
+          <div>
+            <dt>{{ totalQuestions() }}</dt>
+            <dd>domande</dd>
+          </div>
+          <div>
+            <dt>~15</dt>
+            <dd>minuti</dd>
+          </div>
+        </dl>
+        <button type="button" class="q-btn q-btn--primary q-btn--wide gs-rise" (click)="start()">
+          Inizia il questionario
+        </button>
+      </header>
+    } @else {
+      <!-- Step sezione corrente: il track su [stepIndex()] ricrea il DOM e fa ripartire le animazioni -->
+      @for (step of [stepIndex()]; track step) {
+        <section class="q-step">
+          <header class="q-step__header gs-rise">
+            <span class="q-step__ghost" aria-hidden="true">{{
+              (step + 1).toString().padStart(2, '0')
+            }}</span>
+            <img class="q-logo q-logo--step" src="assets/logo/logo-ea.png" alt="Logo EA" />
+            <p class="q-eyebrow">Sezione {{ step + 1 }} di {{ totalSteps() }}</p>
+            <h2 class="q-step__title">{{ currentSection()!.title }}</h2>
+          </header>
+
+          <div class="q-step__questions">
+            @for (q of currentSection()!.questions; track q.id) {
+              <app-question-field
+                class="gs-rise"
+                [question]="q"
+                [answer]="answerFor(q)"
+                (answerChange)="setAnswer(q.id, $event)"
+                [showErrors]="attempted()" />
+            }
+          </div>
+        </section>
+      }
+
+      @if (attempted() && !stepValid()) {
+        <p class="q-banner q-banner--error" role="alert">
+          Completare i campi obbligatori evidenziati prima di proseguire.
+        </p>
+      }
+      @if (submitError()) {
+        <p class="q-banner q-banner--error" role="alert">{{ submitError() }}</p>
+      }
+
+      <nav class="q-nav">
+        <button type="button" class="q-btn q-btn--ghost" (click)="back()" [disabled]="submitting()">
+          Indietro
+        </button>
+        <button
+          type="button"
+          class="q-btn q-btn--primary q-btn--grow"
+          (click)="next()"
+          [disabled]="submitting()">
+          @if (submitting()) {
+            Invio in corso…
+          } @else if (isLastStep()) {
+            Invia le risposte
+          } @else {
+            Avanti
+          }
+        </button>
+      </nav>
+    }
+  </main>
+</div>
