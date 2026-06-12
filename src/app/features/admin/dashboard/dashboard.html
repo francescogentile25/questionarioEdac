@@ -1,0 +1,104 @@
+<div class="db-page">
+  <header class="db-header">
+    <div class="db-header__brand">
+      <img src="assets/logo/logo-ea.png" alt="Logo EA" />
+      <div>
+        <p class="db-eyebrow">Questionari PEI</p>
+        <h1 class="db-title">Dashboard</h1>
+      </div>
+    </div>
+    <div class="db-header__user">
+      <span class="db-header__email">{{ supabase.userEmail() }}</span>
+      <button type="button" class="db-btn db-btn--ghost" (click)="logout()">Esci</button>
+    </div>
+  </header>
+
+  <main class="db-main">
+    @if (load().loading) {
+      <!-- Stato: caricamento -->
+      <div class="db-center">
+        <span class="db-loader" aria-hidden="true"></span>
+        <p>Caricamento statistiche…</p>
+      </div>
+    } @else if (load().error) {
+      <!-- Stato: errore -->
+      <div class="db-center">
+        <p class="db-center__title">Qualcosa è andato storto</p>
+        <p>{{ load().error }}</p>
+        <button type="button" class="db-btn db-btn--primary" (click)="retry()">Riprova</button>
+      </div>
+    } @else if (load().data!.totalSubmissions === 0) {
+      <!-- Stato: vuoto -->
+      <div class="db-center">
+        <p class="db-center__title">Nessun questionario ricevuto</p>
+        <p>Le statistiche appariranno qui al primo invio.</p>
+      </div>
+    } @else {
+      <!-- KPI -->
+      <div class="db-cards">
+        <article class="db-card">
+          <p class="db-card__value">{{ load().data!.totalSubmissions }}</p>
+          <p class="db-card__label">Questionari ricevuti</p>
+        </article>
+        <article class="db-card">
+          <p class="db-card__value">{{ totalAnswers() }}</p>
+          <p class="db-card__label">Risposte raccolte</p>
+        </article>
+        <article class="db-card">
+          <p class="db-card__value db-card__value--small">{{ lastSubmission() }}</p>
+          <p class="db-card__label">Ultimo invio</p>
+        </article>
+      </div>
+
+      <!-- Ultimi invii -->
+      <section class="db-panel">
+        <h2 class="db-panel__title">Ultimi invii</h2>
+        <ul class="db-recent">
+          @for (sub of load().data!.recent; track sub.id) {
+            <li>
+              <span class="db-recent__id">{{ sub.id.slice(0, 8) }}…</span>
+              <span class="db-recent__date">{{ formatDate(sub.created_at) }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <!-- Distribuzioni per sezione -->
+      @for (stat of sectionStats(); track stat.section.id) {
+        <section class="db-panel">
+          <h2 class="db-panel__title">
+            <span class="db-panel__num">{{ stat.section.position.toString().padStart(2, '0') }}</span>
+            {{ stat.section.title }}
+          </h2>
+
+          @for (qs of stat.questions; track qs.question.id) {
+            <div class="db-question">
+              <p class="db-question__text">
+                {{ qs.question.text }}
+                <span class="db-question__answered">{{ qs.answered }} risposte</span>
+              </p>
+
+              @if (qs.options.length) {
+                <div class="db-bars">
+                  @for (opt of qs.options; track opt.label) {
+                    <div class="db-bar">
+                      <div class="db-bar__head">
+                        <span class="db-bar__label">{{ opt.label }}</span>
+                        <span class="db-bar__count">{{ opt.count }} · {{ opt.pct }}%</span>
+                      </div>
+                      <div class="db-bar__track">
+                        <div class="db-bar__fill" [style.width.%]="opt.pct"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="db-question__free">Risposta libera — consultabile per singolo invio</p>
+              }
+            </div>
+          }
+        </section>
+      }
+    }
+  </main>
+</div>

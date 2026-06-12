@@ -1,0 +1,143 @@
+:host {
+  display: block;
+}
+
+.al-page {
+  // Palette logo EA (vedi questionario.scss)
+  --brand: #2a1a55;
+  --brand-deep: #1d113e;
+  --accent: #30aede;
+  --accent-deep: #1a85b5;
+  --paper: #f5f5fa;
+  --card: #ffffff;
+  --ink: #221a3f;
+  --ink-soft: #5e5a78;
+  --line: #dcdae9;
+  --error: #b3402e;
+
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  font-family: 'Albert Sans', 'Noto Sans', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(900px 450px at 85% -5%, rgba(48, 174, 222, 0.12), transparent 60%),
+    radial-gradient(700px 420px at -10% 105%, rgba(42, 26, 85, 0.1), transparent 60%),
+    var(--paper);
+
+  * {
+    font-family: inherit;
+  }
+}
+
+.al-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 2.2rem 1.8rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 24px 60px -30px rgba(29, 17, 62, 0.35);
+}
+
+.al-logo {
+  width: 56px;
+  margin-bottom: 1.2rem;
+}
+
+.al-eyebrow {
+  margin: 0 0 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.al-title {
+  margin: 0 0 1.6rem;
+  font-family: 'Fraunces', serif;
+  font-weight: 560;
+  font-size: 1.7rem;
+  color: var(--brand-deep);
+}
+
+.al-field {
+  display: block;
+  margin-bottom: 1rem;
+
+  span {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.75rem 0.95rem;
+    border: 1.5px solid var(--line);
+    border-radius: 13px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(48, 174, 222, 0.16);
+    }
+  }
+}
+
+.al-error {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--error);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.al-banner {
+  margin: 0 0 1rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(179, 64, 46, 0.09);
+  border: 1px solid rgba(179, 64, 46, 0.35);
+  color: var(--error);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.al-submit {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 0.4rem;
+  border: none;
+  border-radius: 99px;
+  background: var(--brand);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 8px 22px -10px rgba(42, 26, 85, 0.55);
+  transition: background-color 0.18s ease, transform 0.1s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--brand-deep);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+}

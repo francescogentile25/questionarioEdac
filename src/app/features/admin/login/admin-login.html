@@ -1,0 +1,45 @@
+<div class="al-page">
+  <div class="al-card">
+    <img class="al-logo" src="assets/logo/logo-ea.png" alt="Logo EA" />
+    <p class="al-eyebrow">Area riservata</p>
+    <h1 class="al-title">Accedi alla dashboard</h1>
+
+    <form (submit)="onSubmit($event)">
+      <label class="al-field">
+        <span>Email</span>
+        <input type="email" [formField]="loginForm.email" autocomplete="username" />
+        @if (loginForm.email().touched() && !loginForm.email().valid()) {
+          <small class="al-error">
+            @for (err of loginForm.email().errors(); track err) {
+              {{ err.message }}
+            }
+          </small>
+        }
+      </label>
+
+      <label class="al-field">
+        <span>Password</span>
+        <input type="password" [formField]="loginForm.password" autocomplete="current-password" />
+        @if (loginForm.password().touched() && !loginForm.password().valid()) {
+          <small class="al-error">
+            @for (err of loginForm.password().errors(); track err) {
+              {{ err.message }}
+            }
+          </small>
+        }
+      </label>
+
+      @if (authError()) {
+        <p class="al-banner" role="alert">{{ authError() }}</p>
+      }
+
+      <button type="submit" class="al-submit" [disabled]="!loginForm().valid() || loading()">
+        @if (loading()) {
+          Accesso in corso…
+        } @else {
+          Accedi
+        }
+      </button>
+    </form>
+  </div>
+</div>
